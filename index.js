@@ -27,7 +27,6 @@ const __dirname = dirname(__filename);
 console.log(__dirname);
 console.log(__filename);
 
-
 console.log(path.join(__dirname,'static'));
 app.use(express.static(path.join(__dirname,'static')));
 app.listen(port, () => {
@@ -41,19 +40,32 @@ app.get('/', function(req, res) {
 
 app.post('/search', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
-    const searchTerm = req.query.term;
-    let searchValue = '';
-
-    if (!searchTerm) {
-        searchValue = 'Pier Pressure'
-    } else {
-        searchValue = searchTerm;
+    console.log(Boolean(req.query.term));
+    let searchSID;
+    let searchTerm;
+    if (req.query.showid) { 
+        searchSID = req.query.showid;
     }
-    //console.log(db.prepare(`SELECT *, e.name AS ename FROM episode AS e, show AS s WHERE (s.show_id = e.id_show)`).all());
-    res.send(db.prepare(`SELECT *, e.name AS ename FROM episode AS e, show AS s WHERE (s.show_id = e.id_show) AND (ename LIKE '%${searchValue}%' OR s.name LIKE '%${searchValue}%');`).all())
+    if (req.query.term) {
+        console.log('20')
+        searchTerm = req.query.term;
+    }
+
+    if (req.query.term) {
+        console.log('21')
+        if (searchTerm == '') {
+            searchTerm = 'Pier Pressure'
+        }
+    }
+    //console.log(db.prepare(`SELECT *, e.name AS ename FROM episode AS e, show AS s  WHERE (s.show_id = e.id_show) AND (ename LIKE '%${searchTerm}%' OR s.name LIKE '%${searchTerm}%');`).all());
+    if (req.query.showid) {
+    res.send(db.prepare(`SELECT *, e.name AS ename FROM episode AS e, show AS s 
+    WHERE (s.show_id = e.id_show) AND (s.show_id = ${searchSID}) ORDER BY season ASC, episode ASC`).all());
+    } else if (req.query.term) {
+        res.send(db.prepare(`SELECT *, e.name AS ename FROM episode AS e, show AS s 
+    WHERE (s.show_id = e.id_show) AND (ename LIKE '%${searchTerm}%' OR s.name LIKE '%${searchTerm}%');`).all());
+    }
 })
-
-
 
 app.get('/clicked', (req, res) => {
     const click = {clickTime: new Date()};
@@ -66,7 +78,6 @@ app.get('/clicked', (req, res) => {
     //console.log(db.prepare('SELECT * FROM episode, show;').all()[1]);
     res.send(db.prepare(`SELECT *, e.name AS ename FROM episode AS e, show AS s WHERE (s.show_id = e.id_show);`).all());
 });
-
 
 import Database from 'better-sqlite3';
 const db = new Database('./database/nodejs-sqlite/EpisodeDatabase.db');
