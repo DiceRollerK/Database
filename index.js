@@ -44,26 +44,30 @@ app.post('/search', (req, res) => {
     let searchSID;
     let searchTerm;
     if (req.query.showid) { 
-        searchSID = req.query.showid;
+        //console.log('19')
+        //console.log(db.prepare(`SELECT show_id FROM show WHERE name = '${req.query.showid}' LIMIT 1`).all());
+        searchSID = db.prepare(`SELECT show_id FROM show WHERE name = '${req.query.showid}' LIMIT 1`).all()[0].show_id;
+        console.log(searchSID)
     }
     if (req.query.term) {
-        console.log('20')
+        //console.log('20')
         searchTerm = req.query.term;
     }
 
     if (req.query.term) {
-        console.log('21')
+        //console.log('21')
         if (searchTerm == '') {
             searchTerm = 'Pier Pressure'
         }
     }
     //console.log(db.prepare(`SELECT *, e.name AS ename FROM episode AS e, show AS s  WHERE (s.show_id = e.id_show) AND (ename LIKE '%${searchTerm}%' OR s.name LIKE '%${searchTerm}%');`).all());
     if (req.query.showid) {
-    res.send(db.prepare(`SELECT *, e.name AS ename FROM episode AS e, show AS s 
-    WHERE (s.show_id = e.id_show) AND (s.show_id = ${searchSID}) ORDER BY season ASC, episode ASC`).all());
+        //console.log('22')
+        res.send(db.prepare(`SELECT *, e.name AS ename FROM episode AS e, show AS s 
+        WHERE (s.show_id = e.id_show) AND (s.show_id = ${searchSID}) ORDER BY season ASC, episode ASC`).all());
     } else if (req.query.term) {
         res.send(db.prepare(`SELECT *, e.name AS ename FROM episode AS e, show AS s 
-    WHERE (s.show_id = e.id_show) AND (ename LIKE '%${searchTerm}%' OR s.name LIKE '%${searchTerm}%');`).all());
+        WHERE (s.show_id = e.id_show) AND (ename LIKE '%${searchTerm}%' OR s.name LIKE '%${searchTerm}%');`).all());
     }
 })
 
