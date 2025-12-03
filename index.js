@@ -1,18 +1,9 @@
-
-
-
 //Ievietot datus
 //const insert = db.prepare('INSERT INTO time (time_id, start_date, end_date) VALUES (?, ?, ?)');
 //insert.run('2','1989-07-05 12:00:00.0000','1998-05-14 12:00:00.0000');
 
 //Izvadīt datus
 //console.log(db.prepare('SELECT * FROM time;').all());
-
-/*
-import http from 'http';
-import { URL } from 'url';
-import querystring, { stringify } from'querystring';
-*/
 
 import express from'express';
 import path from'path';
@@ -24,10 +15,7 @@ import { dirname } from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-console.log(__dirname);
-console.log(__filename);
 
-console.log(path.join(__dirname,'static'));
 app.use(express.static(path.join(__dirname,'static')));
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
@@ -40,32 +28,28 @@ app.get('/', function(req, res) {
 
 app.post('/search', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
-    console.log(Boolean(req.query.term));
     let searchSID;
     let searchTerm;
     if (req.query.showid) { 
-        //console.log('19')
-        console.log(db.prepare(`SELECT show_id FROM show WHERE name = '${req.query.showid}' LIMIT 1`).all()[0]);
+        //console.log(db.prepare(`SELECT show_id FROM show WHERE name = '${req.query.showid}' LIMIT 1`).all()[0]);
+        //console.log(req.query.showid)
         let a = decodeURIComponent(req.query.showid);
+        console.log(`SELECT show_id FROM show WHERE name = '${a}' LIMIT 1`)
         searchSID = db.prepare(`SELECT show_id FROM show WHERE name = '${a}' LIMIT 1`).all()[0].show_id;
-        console.log(searchSID)
     }
     if (req.query.term) {
-        //console.log('20')
         searchTerm = req.query.term;
     }
 
     if (req.query.term) {
-        //console.log('21')
         if (searchTerm == '') {
             searchTerm = 'Pier Pressure'
         }
     }
-    //console.log(db.prepare(`SELECT *, e.name AS ename FROM episode AS e, show AS s  WHERE (s.show_id = e.id_show) AND (ename LIKE '%${searchTerm}%' OR s.name LIKE '%${searchTerm}%');`).all());
     if (req.query.showid) {
-        //console.log('22')
-        res.send(db.prepare(`SELECT *, e.name AS ename FROM episode AS e, show AS s 
-        WHERE (s.show_id = e.id_show) AND (s.show_id = ${searchSID}) ORDER BY season ASC, episode ASC`).all());
+        res.send(db.prepare(`SELECT *, e.name AS ename FROM episode AS e, show AS s, time, genre, theme, story 
+        WHERE (s.show_id = e.id_show) AND (s.show_id = ${searchSID}) AND (time_id = id_time) AND (genre_id = id_genre) AND (story_id = id_story) AND (theme_id = id_theme)
+        ORDER BY season ASC, episode ASC`).all());
     } else if (req.query.term) {
         res.send(db.prepare(`SELECT *, e.name AS ename FROM episode AS e, show AS s 
         WHERE (s.show_id = e.id_show) AND (ename LIKE '%${searchTerm}%' OR s.name LIKE '%${searchTerm}%');`).all());
@@ -75,16 +59,22 @@ app.post('/search', (req, res) => {
 app.get('/clicked', (req, res) => {
     const click = {clickTime: new Date()};
     console.log(click);
-    console.log(req.get);
     
     //let search = document.querySelector("#text-input").value
     //console.log(db.prepare(`SELECT *, e.name AS ename FROM episode AS e, show AS s WHERE s.show_id = e.id_show WHERE ename LIKE '%${search}%'`).all());
-    //console.log(db.prepare(`SELECT *, e.name AS ename FROM episode AS e, show AS s WHERE s.show_id = e.id_show`).all());
-    //console.log(db.prepare('SELECT * FROM episode, show;').all()[1]);
     res.send(db.prepare(`SELECT *, e.name AS ename FROM episode AS e, show AS s WHERE (s.show_id = e.id_show);`).all());
+});
+
+app.post('/show', (req, res) => {
+    res.send(db.prepare(`SELECT * FROM show WHERE show_id = ${req.query.show_id}`));
 });
 
 import Database from 'better-sqlite3';
 const db = new Database('./database/EpisodeDatabase.db');
 
-console.log("Done");
+console.log(db.prepare('SELECT * FROM show, theme, genre WHERE (theme_id = id_theme) AND (genre_id = id_genre)').all()[0]);
+/*
+function meklet(search_id) {
+
+}
+*/
