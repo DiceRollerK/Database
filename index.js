@@ -65,14 +65,16 @@ app.get('/clicked', (req, res) => {
     res.send(db.prepare(`SELECT *, e.name AS ename FROM episode AS e, show AS s WHERE (s.show_id = e.id_show);`).all());
 });
 
-app.post('/show', (req, res) => {
-    res.send(db.prepare(`SELECT * FROM show WHERE show_id = ${req.query.show_id}`));
+app.get('/show', (req, res) => {
+    console.log(db.prepare(`SELECT * FROM show, time, genre, theme WHERE (time_id = id_time) AND (genre_id = id_genre) AND (theme_id = id_theme)`).all())
+    res.send(db.prepare(`SELECT * FROM show, time, genre, theme WHERE (time_id = id_time) AND (genre_id = id_genre) AND (theme_id = id_theme)`).all());
 });
 
 import Database from 'better-sqlite3';
 const db = new Database('./database/EpisodeDatabase.db');
 
 console.log(db.prepare('SELECT * FROM show, theme, genre WHERE (theme_id = id_theme) AND (genre_id = id_genre)').all()[0]);
+
 /*
 function meklet(search_id) {
 

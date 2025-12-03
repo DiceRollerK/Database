@@ -18,9 +18,8 @@ genre2 VARCHAR(45),
 genre3 VARCHAR(45));
 
 INSERT INTO genre VALUES(1,'Komēdija',NULL,NULL);
-INSERT INTO genre VALUES(2,'Komēdija',NULL,NULL);
 INSERT INTO genre VALUES(3,'Komēdija','Drāma','Šausmas');
-INSERT INTO genre VALUES(4,'Drāma','Asa sižeta',NULL);
+INSERT INTO genre VALUES(4,'Drāma','Ass sižets',NULL);
 
 CREATE TABLE story(
 story_id INT PRIMARY KEY NOT NULL,
@@ -43,7 +42,7 @@ theme1 VARCHAR(45),
 theme2 VARCHAR(45),
 theme3 VARCHAR(45));
 
-INSERT INTO theme VALUES(1,'Ģimene','Melošana','Bagātība');
+INSERT INTO theme VALUES(1,'Ģimene','Melošana','Bagātības zaudēšana');
 INSERT INTO theme VALUES(2,'Melošana','Attiecības','Narcisms');
 INSERT INTO theme VALUES(3,'Trauma','Fantāzija','Pudeles epizodes');
 INSERT INTO theme VALUES(4,'Mīlestība','Nāve','Roboti');
@@ -77,7 +76,7 @@ CREATE TABLE IF NOT EXISTS "show" (
 	PRIMARY KEY("show_id"));
 
 INSERT INTO show VALUES(1,'Arrested Development',1,'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Arrested_Development.svg/2560px-Arrested_Development.svg.png', 1, 1);
-INSERT INTO show VALUES(2,'Seinfeld',2,'https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Seinfeld_logo.svg/2560px-Seinfeld_logo.svg.png', 2, 2);
+INSERT INTO show VALUES(2,'Seinfeld',2,'https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Seinfeld_logo.svg/2560px-Seinfeld_logo.svg.png', 1, 2);
 INSERT INTO show VALUES(3,'Room 104',3,'https://upload.wikimedia.org/wikipedia/en/d/d5/Room_104_teaser.png', 3, 3);
 INSERT INTO show VALUES(4,'Love, Death & Robots',4,'https://upload.wikimedia.org/wikipedia/en/c/cb/Love%2C_Death_%26_Robots_Logo.png', 4, 4);
 COMMIT;
