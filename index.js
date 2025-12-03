@@ -25,40 +25,56 @@ app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-
 app.post('/search', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
-    let searchSID;
-    let searchTerm;
+    let search_id = req.query.searchID;
+
+    let genre;
+    if (req.query.genre) genre = req.query.genre;
+
+    let showID;
     if (req.query.showid) { 
-        //console.log(db.prepare(`SELECT show_id FROM show WHERE name = '${req.query.showid}' LIMIT 1`).all()[0]);
-        //console.log(req.query.showid)
         let a = decodeURIComponent(req.query.showid);
-        searchSID = db.prepare(`SELECT show_id FROM show WHERE name = '${a}' LIMIT 1`).all()[0].show_id;
-    }
-    if (req.query.term) {
-        searchTerm = req.query.term;
+        showID = db.prepare(`SELECT show_id FROM show WHERE name = '${a}' LIMIT 1`).all()[0].show_id;
     }
 
+    let searchValue;
     if (req.query.term) {
-        if (searchTerm == '') {
-            searchTerm = 'Pier Pressure'
+        searchValue = req.query.term;
+        if (searchValue == '') {
+            searchValue = 'Pier Pressure'
         }
     }
-    if (req.query.showid) {
-        res.send(db.prepare(`SELECT *, e.name AS ename FROM episode AS e, show AS s, time, genre, theme, story 
-        WHERE (s.show_id = e.id_show) AND (s.show_id = ${searchSID}) AND (time_id = id_time) AND (genre_id = id_genre) AND (story_id = id_story) AND (theme_id = id_theme)
-        ORDER BY season ASC, episode ASC`).all());
-    } else if (req.query.term) {
+
+    //console.log(`SELECT *, e.name AS ename FROM episode AS e, show AS s, story 
+    //    WHERE (s.show_id = e.id_show) AND (story_id = id_story)${genre ? ` AND (genre LIKE '%${genre}%' )` : ''} 
+    //    AND (ename LIKE '%${searchValue}%');`);
+
+    if (search_id == 0) {
         res.send(db.prepare(`SELECT *, e.name AS ename FROM episode AS e, show AS s, story 
-        WHERE (s.show_id = e.id_show) AND (ename LIKE '%${searchTerm}%' OR s.name LIKE '%${searchTerm}%') AND (story_id = id_story)${req.query.genre ? ` AND (genre LIKE '%${req.query.genre}%')` : ''};`).all());
+        WHERE (s.show_id = e.id_show) AND (story_id = id_story)${genre ? ` AND (genre LIKE '%${genre}%')` : ''} 
+        AND (ename LIKE '%${searchValue}%' OR s.name LIKE '%${searchValue}%' OR element1 LIKE '%${searchValue}%' OR element2 LIKE '%${searchValue}%' OR element3 LIKE '%${searchValue}%');`).all());
+    } else if (search_id == 1) {
+        res.send(db.prepare(`SELECT *, e.name AS ename FROM episode AS e, show AS s, story 
+        WHERE (s.show_id = e.id_show) AND (story_id = id_story)${genre ? ` AND (genre LIKE '%${genre}%' )` : ''} 
+        AND (ename LIKE '%${searchValue}%');`).all());
+    } else if (search_id == 2) {
+        res.send(db.prepare(`SELECT *, e.name AS ename FROM episode AS e, show AS s, story 
+        WHERE (s.show_id = e.id_show) AND (story_id = id_story)${genre ? ` AND (genre LIKE '%${genre}%')` : ''} 
+        AND (s.name LIKE '%${searchValue}%');`).all());
+    } else if (search_id == 3) {
+        res.send(db.prepare(`SELECT *, e.name AS ename FROM episode AS e, show AS s, story 
+        WHERE (s.show_id = e.id_show) AND (story_id = id_story)${genre ? ` AND (genre LIKE '%${genre}%')` : ''} 
+        AND (element1 LIKE '%${searchValue}%' OR element2 LIKE '%${searchValue}%' OR element3 LIKE '%${searchValue}%');`).all());
+    } else if (search_id = -1) {
+        res.send(db.prepare(`SELECT *, e.name AS ename FROM episode AS e, show AS s, story, time, genre, theme
+        WHERE (s.show_id = e.id_show) AND (story_id = id_story) AND (time_id = id_time) AND (genre_id = id_genre) AND (theme_id = id_theme)
+        AND (show_id = ${showID});`).all());
     }
+
 })
 
 app.get('/clicked', (req, res) => {
-    const click = {clickTime: new Date()};
-    console.log(click);
-    
     //let search = document.querySelector("#text-input").value
     //console.log(db.prepare(`SELECT *, e.name AS ename FROM episode AS e, show AS s WHERE s.show_id = e.id_show WHERE ename LIKE '%${search}%'`).all());
     res.send(db.prepare(`SELECT *, e.name AS ename FROM episode AS e, show AS s, story WHERE (s.show_id = e.id_show) AND (story_id = id_story);`).all());
@@ -70,9 +86,3 @@ app.get('/show', (req, res) => {
 
 import Database from 'better-sqlite3';
 const db = new Database('./database/EpisodeDatabase.db');
-
-/*
-function meklet(search_id) {
-
-}
-*/

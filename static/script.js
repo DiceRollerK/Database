@@ -23,8 +23,10 @@ document.getElementById("btn-all").addEventListener("click", () =>{
 document.getElementById("btn").addEventListener("click", () => {
     let textValue = document.getElementById('text-input').value;
     if (textValue == '') textValue = 'Pier Pressure';
+    let genre = document.getElementById('inputGroupSelect02').value;
+    let searchID = document.getElementById('inputGroupSelect01').value;
 
-   fetch(`/search?term=${textValue}${document.getElementById('inputGroupSelect02').value != "Žanrs" ? '&genre='+document.getElementById('inputGroupSelect02').value : ''}`, {method: 'POST'})
+   fetch(`/search?term=${textValue}${genre != "Žanrs" ? '&genre='+genre : ''}&searchID=${searchID}`, {method: 'POST'})
     .then(function(response) {
         if(response.ok) {
             return response.json();
@@ -50,7 +52,7 @@ function seriesEpisodes() {
     let textValue = this.alt;
     textValue = encodeURIComponent(textValue);
 
-   fetch(`/search?showid=${textValue}`, {method: 'POST'})
+   fetch(`/search?showid=${textValue}&searchID=-1`, {method: 'POST'})
     .then(function(response) {
         if(response.ok) {
             return response.json();
@@ -124,7 +126,7 @@ function serialaVeidosana(data, i) {
 
     let div2  = document.createElement("div");
     div3.appendChild(div2);
-    div2.classList.add('card-body', 'p-2');
+    div2.classList.add('card-body', 'p-2', 'mw-80');
                 
     let h5 = document.createElement('h5');
     h5.classList.add("card-title", "fs-4'");
@@ -165,7 +167,7 @@ function veidosana(data, serials) {
 
     let div2  = document.createElement("div");
     div.appendChild(div2);
-    div2.classList.add('card-body', 'p-2');
+    div2.classList.add('card-body', 'p-2', 'mw-80');
             
     let h5 = document.createElement('h5');
     h5.classList.add("card-title", "fs-4'");
