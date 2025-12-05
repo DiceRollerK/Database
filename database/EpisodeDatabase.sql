@@ -20,6 +20,7 @@ genre3 VARCHAR(45)
 );
 
 INSERT INTO genre VALUES(1,'Komēdija',NULL,NULL);
+INSERT INTO genre VALUES(2,'Komēdija',NULL,NULL);
 INSERT INTO genre VALUES(3,'Komēdija','Drāma','Šausmas');
 INSERT INTO genre VALUES(4,'Drāma','Ass sižets',NULL);
 
@@ -39,6 +40,13 @@ INSERT INTO story VALUES(6,'Cīņas','Atriebība','Distopija');
 INSERT INTO story VALUES(7,'Liecinieks','Bēgšana','Cilpa');
 INSERT INTO story VALUES(8,'Briesmonis','Iztēle','Noslēpums');
 INSERT INTO story VALUES(9,'Citplanētieši','Mehāniskie tērpi','Zemes aizsardzība');
+INSERT INTO story VALUES(10,'Kaķi','Vampīri','Algotņi');
+INSERT INTO story VALUES(11,'Jogurts','Eksperimenti','Pārņemšana');
+INSERT INTO story VALUES(12,'Kosmoss','Piecelšanās pākstā','Kļūda');
+INSERT INTO story VALUES(13,'Dators','90-tie','Tehniskais atbalsts');
+INSERT INTO story VALUES(14,'Videospēle','Bērnības draugi','Sadarbošanās');
+INSERT INTO story VALUES(15,'Muzikants','Atzīšanās','Mazs koncerts');
+INSERT INTO story VALUES(16,'90-tie','Neparedzētas sekas','Paslēpts');
 
 CREATE TABLE theme(
 theme_id INT PRIMARY KEY NOT NULL,
@@ -73,6 +81,13 @@ INSERT INTO episode VALUES(6,'Sonnie''s Edge','2019-03-15',1,1,'Ass sižets',4,6
 INSERT INTO episode VALUES(7,'The Witness','2019-03-15',1,3,'Ass sižets',4,7,0);
 INSERT INTO episode VALUES(8,'Ralphie','2017-07-28',1,1,'Šausmas',3,8,0);
 INSERT INTO episode VALUES(9,'Suits','2019-03-15',1,4,'Ass sižets',4,9,0);
+INSERT INTO episode VALUES(10,'Sucker of Souls','2019-03-15',1,5,'Ass sižets',4,10,0);
+INSERT INTO episode VALUES(11,'When The Yogurt Took Over','2019-03-15',1,6,'Komēdija',4,11,0);
+INSERT INTO episode VALUES(12,'Beyond the Aquila Rift','2019-03-15',1,7,'Drāma',4,12,0);
+INSERT INTO episode VALUES(13,'The Internet','2017-08-25',1,5,'Drāma',3,13,0);
+INSERT INTO episode VALUES(14,'The Night Babby Died','2020-09-25',4,10,'Drāma',3,14,0);
+INSERT INTO episode VALUES(15,'The Murderer','2020-07-24',4,1,'Drāma',3,15,0);
+INSERT INTO episode VALUES(16,'Foam Party','2020-09-04',4,10,'Šausmas',3,16,0);
 
 CREATE TABLE show (
 	show_id	INT PRIMARY KEY NOT NULL,
@@ -85,7 +100,7 @@ CREATE TABLE show (
 );
 
 INSERT INTO show VALUES(1,'Arrested Development',1,'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Arrested_Development.svg/2560px-Arrested_Development.svg.png',1,1,0);
-INSERT INTO show VALUES(2,'Seinfeld',2,'https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Seinfeld_logo.svg/2560px-Seinfeld_logo.svg.png',1,2,0);
+INSERT INTO show VALUES(2,'Seinfeld',2,'https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Seinfeld_logo.svg/2560px-Seinfeld_logo.svg.png',2,2,0);
 INSERT INTO show VALUES(3,'Room 104',3,'https://upload.wikimedia.org/wikipedia/en/d/d5/Room_104_teaser.png',3,3,0);
 INSERT INTO show VALUES(4,'Love, Death & Robots',4,'https://upload.wikimedia.org/wikipedia/en/c/cb/Love%2C_Death_%26_Robots_Logo.png',4,4,0);
 COMMIT;

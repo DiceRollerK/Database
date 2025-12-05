@@ -1,6 +1,8 @@
 //import Database from "./database/nodejs-sqlite/index.mjs";
 //const db = new Database('EpisodeDatabase.db');
 let debug = false;
+let outputData;
+let page = 0;
 
 
 document.getElementById("btn-all").addEventListener("click", () =>{
@@ -14,11 +16,18 @@ document.getElementById("btn-all").addEventListener("click", () =>{
         throw new Error('Request failed.');
     })
     .then(function(data) {
+        document.getElementById('series').innerHTML = '';
+        document.getElementById('series').style.display = 'none';
+        outputData = data;
+        page = 0;
         document.getElementById('output').innerHTML = "";
         document.getElementById('output').style.display = 'flex';
-        for (let i = 0; i < data.length; i++) {
-            veidosana(data, i);
+        if (data.length > (((page+1)*6))) {
+            for (let i = page*6; i < (page+1)*6; i++) {
+                veidosana(data, i);
+            }
         }
+        arrowCheck();
     })
     .catch(function(error) {
         console.log(error);
@@ -48,25 +57,51 @@ document.getElementById('btn-favourites').addEventListener('click', () => {
     })
     .then(function(data) {
         document.getElementById('output').innerHTML = "";
+        document.getElementById('series').innerHTML = '';
+        document.getElementById('series').style.display = 'flex';
 
         if (data[0] === undefined) {
             neatrada();
         } else {
-            document.getElementById('series').innerHTML = '';
-            let showids = [];
+            let series = [];
+            let episodes = [];
             for (let i = 0; i < data.length; i++) {
                 if (data[i].efavourite == 1) {
-                    veidosana(data, i);
-                } 
+                    episodes.push(data[i]);
+                }
+                if (data[i].favourite == 1) {
+                    series.push(data[i]);
+                }
             }
-            for (let i = 0; i < data.length; i++) {
-            if (data[i].favourite == 1) {
-                    if (!showids.includes(data[i].show_id)) {
-                        showids.push(data[i].show_id);
-                        serialaVeidosana(data, i);
+            outputData = episodes;
+            page = 0;
+            document.getElementById('series').innerHTML = '';
+            let showids = [];
+            if (episodes.length > 6) {
+                for (let i = 0; i < 6; i++) {
+                    veidosana(episodes, i);
+                }
+            } else {
+                for (let i = 0; i < episodes.length; i++) {
+                    veidosana(episodes, i);
+                }
+            }
+            if (series.length > 6) {
+                for (let i = 0; i < series.length; i++) {
+                    if (!showids.includes(series[i].show_id)) {
+                        showids.push(series[i].show_id);
+                        serialaVeidosana(series, i);
+                    }
+                }
+            } else {
+                for (let i = 0; i < series.length; i++) {
+                    if (!showids.includes(series[i].show_id)) {
+                        showids.push(series[i].show_id);
+                        serialaVeidosana(series, i);
                     }
                 }
             }
+            arrowCheck();
         }
     })
     .catch(function(error) {
@@ -92,13 +127,25 @@ function search() {
     })
     .then(function(data) {
         document.getElementById('output').innerHTML = "";
+        document.getElementById('series').innerHTML = '';
+        document.getElementById('series').style.display = 'none';
 
         if (data[0] === undefined) {
             neatrada();
         } else {
-            for (let i = 0; i < data.length; i++) {
-            veidosana(data, i);
+            outputData = data;
+            page = 0;
+            console.log(data.length);
+            if (data.length > 6) {
+                for (let i = 0; i < 6; i++) {
+                    veidosana(data, i);
+                }
+            } else {
+                for (let i = 0; i < data.length; i++) {
+                    veidosana(data, i);
+                }
             }
+            arrowCheck();
         }
     })
     .catch(function(error) {
@@ -130,6 +177,8 @@ function allSeries() {
         throw new Error('Request failed.');
     })
     .then(function(data) {
+        outputData = [];
+        page = 0;
         document.getElementById('output').innerHTML = "";
         document.getElementById('output').style.display = 'none';
         if (data[0] === undefined) {
@@ -140,6 +189,7 @@ function allSeries() {
                 serialaVeidosana(data, i);
             }
         }
+        arrowCheck();
     })
     .catch(function(error) {
         console.log(error);
@@ -212,6 +262,8 @@ function seriesEpisodes() {
     .then(function(data) {
         document.getElementById('output').innerHTML = "";
         document.getElementById('output').style.display = 'flex';
+        document.getElementById('series').innerHTML = '';
+        document.getElementById('series').style.display = 'none';
 
         if (data[0] === undefined) {
             neatrada();
@@ -229,8 +281,6 @@ function seriesEpisodes() {
 
 function veidosana(data, i) {
     document.getElementById('output').style.display = 'flex';
-    document.getElementById('series').innerHTML = '';
-    document.getElementById('series').style.display = 'none';
     document.getElementById('output').classList.remove('bg-danger');
 
     let star = document.createElement('p');
@@ -341,5 +391,68 @@ function smallScreen(){
 }
 smallScreen();
 window.addEventListener('resize', smallScreen);
+
+function arrowCheck() {
+    if (page == 0) {
+        for (let i = 0; i < 2; i++) {
+            left = document.getElementsByClassName('fa-caret-square-left')[i];
+            left.classList.remove('fas');
+            left.classList.add('far');
+            left.style.cursor = 'initial';
+        }
+    } else {
+        for (let i = 0; i < 2; i++) {
+            left = document.getElementsByClassName('fa-caret-square-left')[i];
+            left.classList.remove('far');
+            left.classList.add('fas');
+            left.style.cursor = 'pointer';
+        }
+    }
+    if ((outputData.length - (((page+1)*6))) > 0) {
+        for (let i = 0; i < 2; i++) {
+            right = document.getElementsByClassName('fa-caret-square-right')[i];
+            right.classList.remove('far');
+            right.classList.add('fas');
+            right.style.cursor = 'pointer';
+        }
+    } else {
+        for (let i = 0; i < 2; i++) {
+            right = document.getElementsByClassName('fa-caret-square-right')[i];
+            right.classList.remove('fas');
+            right.classList.add('far');
+            right.style.cursor = 'initial';
+        }
+    }
+}
+
+function pageChange(virz) {
+    if (debug) console.log(page);
+    if (debug) console.log((outputData.length - (((page+1)*6))));
+    if (virz == 'r'){
+        if ((outputData.length - (((page+1)*6))) >= 6) {
+            page++;
+            document.getElementById('output').innerHTML = '';
+        for (let i = page*6; i < (page+1)*6; i++) {
+            veidosana(outputData, i);
+        }
+        } else if (((outputData.length - (((page+1)*6))) < 6) && (outputData.length - (((page+1)*6))) > 0) {
+            page++;
+            document.getElementById('output').innerHTML = '';
+            for (let i = page*6; i < outputData.length; i++) {
+                veidosana(outputData, i);
+            }
+        }
+    } 
+    if (virz == 'l') {
+        if ((page-1)*6  >= 0) {
+            page--;
+            document.getElementById('output').innerHTML = '';
+        for (let i = page*6; i < (page+1)*6; i++) {
+            veidosana(outputData, i);
+        }
+        }
+    }
+    arrowCheck();
+}
 
 allSeries();

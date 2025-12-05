@@ -32,8 +32,13 @@ main {
     align-items: center;
     flex-direction: column;
     justify-content: flex-start;
-    padding-top: 15vh;
+    padding-top: 10vh;
 }
+
+.far.fa-caret-square-left, .far.fa-caret-square-right {
+    color: #666;
+}
+
 
 .output-container {
     display: none;
